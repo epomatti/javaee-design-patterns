@@ -9,3 +9,5 @@ To run this code simply:
 - Run Main classes for each pattern you want to
 
 Each design pattern code is stored within it's own Maven module.
+
+(I'll move more to this repo once I have the time)
