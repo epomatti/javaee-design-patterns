@@ -1,34 +1,26 @@
 package epomatti.fluid.logic;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 public class Main {
 
 	public static void main(String[] args) throws Exception {
 
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal.js");
-		String path = "rules.js";
+		// Sets Nashorn compatibility mode to allow reading object attributes.
+		System.setProperty("polyglot.js.nashorn-compat", "true");
+		UserService service = new UserService();
 
-		try (InputStream is = Main.class.getClassLoader().getResourceAsStream(path);
-				Reader reader = new InputStreamReader(is)) {
+		// Tests authorized user
+		User userAuthorized = new User();
+		userAuthorized.setName("username");
+		userAuthorized.setProfile("admin");
+		boolean r1 = service.validatePermission(userAuthorized);
+		System.out.println(r1);
 
-			engine.eval(reader);
-			Invocable inv = (Invocable) engine;
-			Object obj = engine.get("obj");
-
-			User user = new User();
-			user.setName("username");
-			user.setProfile("admin");
-
-			Boolean retorno = (Boolean) inv.invokeMethod(obj, "validatePermission", user);
-			System.out.println("Validation: " + retorno);
-
-		}
+		// Tests unauthorized user
+		User userUnuthorized = new User();
+		userAuthorized.setName("username");
+		userAuthorized.setProfile("none");
+		boolean r2 = service.validatePermission(userUnuthorized);
+		System.out.println(r2);
+		
 	}
 }
